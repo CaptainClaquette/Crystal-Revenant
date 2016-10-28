@@ -11,7 +11,7 @@ Yanfly.EBS = Yanfly.EBS || {};
 
 //=============================================================================
  /*:
- * @plugindesc v1.06b Adds a new system where players can only bring
+ * @plugindesc v1.07 Adds a new system where players can only bring
  * equipped skills to battle.
  * @author Yanfly Engine Plugins
  *
@@ -197,6 +197,9 @@ Yanfly.EBS = Yanfly.EBS || {};
  * ============================================================================
  * Changelog
  * ============================================================================
+ *
+ * Version 1.07:
+ * - Updated for RPG Maker MV version 1.3.2.
  *
  * Version 1.06b:
  * - Users with Skill Core and using the <Hide in Battle> notetag will now have
@@ -550,13 +553,17 @@ Game_Actor.prototype.battleSkillsRaw = function() {
 
 Yanfly.EBS.Game_Actor_learnSkill = Game_Actor.prototype.learnSkill;
 Game_Actor.prototype.learnSkill = function(skillId) {
-    var hasLearnedSkill = this.isLearnedSkill(skillId);
+    var hasLearnedSkill = this.isLearnedSkillRaw(skillId);
     Yanfly.EBS.Game_Actor_learnSkill.call(this, skillId);
     this.removeHiddenEquippedSkill(skillId);
     if (!hasLearnedSkill) {
       var slotId = this._battleSkills.indexOf(0);
       if (slotId !== -1) this.equipSkill(skillId, slotId);
     }
+};
+
+Game_Actor.prototype.isLearnedSkillRaw = function(skillId) {
+    return this._skills.contains(skillId);
 };
 
 Game_Actor.prototype.removeHiddenEquippedSkill = function(skillId) {
@@ -985,7 +992,7 @@ Window_SkillEquip.prototype.includes = function(item) {
         var length = item.hideIfLearnedSkill.length;
         for (var i = 0; i < length; ++i) {
           var skillId = item.hideIfLearnedSkill[i];
-          if (this._actor.isLearnedSkill(skillId)) return false;
+          if (this._actor.isLearnedSkillRaw(skillId)) return false;
         }
       }
     }

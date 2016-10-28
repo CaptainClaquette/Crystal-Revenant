@@ -11,7 +11,7 @@ Yanfly.SVE = Yanfly.SVE || {};
 
 //=============================================================================
  /*:
- * @plugindesc v1.14 (Requires YEP_BattleEngineCore.js) This plugin lets
+ * @plugindesc v1.15 (Requires YEP_BattleEngineCore.js) This plugin lets
  * you use Animated Sideview Actors for enemies!
  * @author Yanfly Engine Plugins
  *
@@ -712,6 +712,9 @@ Yanfly.SVE = Yanfly.SVE || {};
  * ============================================================================
  * Changelog
  * ============================================================================
+ *
+ * Version 1.15:
+ * - Updated for RPG Maker MV version 1.3.2.
  *
  * Version 1.14:
  * - Pixi4 update to fix bug that caused state icons to fly off the screen.
@@ -1606,7 +1609,7 @@ Sprite_Enemy.prototype.updateSVFrame = function() {
     if (this._effectType === 'bossCollapse') {
       cdh = ch - this._effectDuration;
     }
-    this.setFrame(cx * cw, cy * ch, cw, ch);
+    // this.setFrame(cx * cw, cy * ch, cw, ch);
     this._mainSprite.setFrame(cx * cw, cy * ch, cw, ch - cdh);
     this.adjustMainBitmapSettings(bitmap);
     this.adjustSVShadowSettings();

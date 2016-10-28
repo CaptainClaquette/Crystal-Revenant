@@ -11,7 +11,7 @@ Yanfly.Aura = Yanfly.Aura || {};
 
 //=============================================================================
  /*:
- * @plugindesc v1.00 (Requires YEP_AutoPassiveStates.js) Add aura effects
+ * @plugindesc v1.01 (Requires YEP_AutoPassiveStates.js) Add aura effects
  * to various database objects.
  * @author Yanfly Engine Plugins
  *
@@ -87,6 +87,17 @@ Yanfly.Aura = Yanfly.Aura || {};
  *   appear. If the 'condition' variable is 'false', then it will not appear.
  *   Remember, this notetag has to be placed in the target delivered state and
  *   not the origin aura itself.
+ *
+ * ============================================================================
+ * Changelog
+ * ============================================================================
+ *
+ * Version 1.01:
+ * - Fixed a bug that would conflict with Taunt and Selection Core making some
+ * aura effects randomly disappear.
+ *
+ * Version 1.00:
+ * - Finished Plugin!
  */
 //=============================================================================
 
@@ -333,9 +344,15 @@ Game_Enemy.prototype.auraStateIds = function() {
 // Game_Unit
 //=============================================================================
 
+Game_Unit.prototype.allAliveMembers = function() {
+  return this.members().filter(function(member) {
+      return member.isAlive();
+  });
+};
+
 Game_Unit.prototype.auraStateTypeIds = function(type) {
   var array = [];
-  var members = this.aliveMembers();
+  var members = this.allAliveMembers();
   var length = members.length;
   for (var i = 0; i < length; ++i) {
     var member = members[i];

@@ -11,7 +11,7 @@ Yanfly.GFD = Yanfly.GFD || {};
 
 //=============================================================================
  /*:
- * @plugindesc v1.00 Place Grid-Free Doodads into your game using an
+ * @plugindesc v1.01 Place Grid-Free Doodads into your game using an
  * in-game editor. Static and animated doodads can be used!
  * @author Yanfly Engine Plugins
  *
@@ -286,6 +286,17 @@ Yanfly.GFD = Yanfly.GFD || {};
  *
  * And that's how you would go about the creation of an animated doodad. If
  * this is confusing, look at some of the examples provided from Yanfly.moe.
+ *
+ * ============================================================================
+ * Changelog
+ * ============================================================================
+ *
+ * Version 1.01:
+ * - Fixed a bug that caused doodads to overlap onto the other border of the
+ * map if it was clipped off.
+ *
+ * Version 1.00:
+ * - Finished Plugin!
  */
 //=============================================================================
 
@@ -353,7 +364,6 @@ ImageManager.loadDoodadBitmap = function(folder, filename, hue, smooth) {
     return this.loadEmptyBitmap();
   }
 };
-
 
 if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= '1.3.0') {
 
@@ -491,7 +501,9 @@ Sprite_Doodad.prototype.screenX = function() {
   var value = this._data.x;
   var display = $gameMap._displayX;
   value -= display * this._tileWidth;
-  if (value + this.width < 0) value += this._mapWidth;
+  if (value + this.width < 0 && $gameMap.isLoopHorizontal()) {
+    value += this._mapWidth;
+  }
   return Math.round(value);
 };
 
@@ -499,7 +511,9 @@ Sprite_Doodad.prototype.screenY = function() {
   var value = this._data.y;
   var display = $gameMap._displayY;
   value -= display * this._tileHeight;
-  if (value + this.height < 0) value += this._mapHeight;
+  if (value + this.height < 0 && $gameMap.isLoopVertical()) {
+    value += this._mapHeight;
+  }
   return Math.round(value);
 };
 
@@ -568,6 +582,20 @@ Spriteset_Map.prototype.addMapDoodads = function() {
     this._doodads.push(new Sprite_Doodad(doodadData));
     this._tilemap.addChild(this._doodads[i]);
   }
+};
+
+Spriteset_Map.prototype.clearDoodads = function() {
+  this.removeCurrentDoodads();
+};
+
+//=============================================================================
+// Scene_Map
+//=============================================================================
+
+Yanfly.GFD.Scene_Map_terminate = Scene_Map.prototype.terminate;
+Scene_Map.prototype.terminate = function() {
+  Yanfly.GFD.Scene_Map_terminate.call(this);
+  this._spriteset.clearDoodads();
 };
 
 //=============================================================================
@@ -682,10 +710,6 @@ DoodadManager.toggle = function() {
   if (!SceneManager._scene.isMap()) return;
   if ($gameTemp._modeGFD) return;
   if (SceneManager._scene._debugActive) return;
-//
-//if ($gameMap.isLoopHorizontal() || $gameMap.isLoopVertical()) {
-//    return console.log('Doodad support for looping maps is not yet included.');
-//  }
   $gameTemp._modeGFD = !$gameTemp._modeGFD;
   SceneManager._scene.toggleGFDWindows()
 };

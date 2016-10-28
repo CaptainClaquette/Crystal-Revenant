@@ -11,7 +11,7 @@ Yanfly.BEC = Yanfly.BEC || {};
 
 //=============================================================================
  /*:
- * @plugindesc v1.39c Have more control over the flow of the battle system
+ * @plugindesc v1.40 Have more control over the flow of the battle system
  * with this plugin and alter various aspects to your liking.
  * @author Yanfly Engine Plugins
  *
@@ -647,6 +647,9 @@ Yanfly.BEC = Yanfly.BEC || {};
  * ============================================================================
  * Changelog
  * ============================================================================
+ *
+ * Version 1.40:
+ * - Updated for RPG Maker MV version 1.3.2.
  *
  * Version 1.39c:
  * - Fixed a bug that caused dead actors to not be a part of action sequence
@@ -1807,7 +1810,7 @@ BattleManager.invokeCounterAttack = function(subject, target) {
     this._logWindow.displayCounter(target);
     action.setAttack();
     action.apply(subject);
-    this._logWindow.displayActionResults(subject, subject);
+    this._logWindow.displayActionResults(target, subject);
     if (subject.isDead()) subject.performCollapse();
 };
 
